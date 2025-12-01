@@ -2,8 +2,9 @@ from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.views import APIView
-from watchlist_app.api.v1.serializers.watchlist import WatchListSerializer
-from watchlist_app.models import Movie
+from watchlist_app.api.v1.serializers.watchlist import WatchListSerializer, PlatformSerializer
+from watchlist_app.models import Movie, Platform
+
 
 # @api_view(['GET', 'POST'])
 # def movie_list(request):
@@ -89,6 +90,44 @@ class MovieDetailsAPIView(APIView):
         except Movie.DoesNotExist:
             return Response({'message': 'Movie id does not exist'}, status.HTTP_404_NOT_FOUND)
         serializer = WatchListSerializer(movie, data = request.data, partial = True)
+        serializer.is_valid(raise_exception = True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class PlatformListsAPIView(APIView):
+    def get(self, request):
+        platforms = Platform.objects.all()
+        serializer = PlatformSerializer(platforms, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        serializer = PlatformSerializer(data = request.data)
+        serializer.is_valid(raise_exception = True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+class PlatformDetailAPIView(APIView):
+    def get(self, request, platform_id):
+            platform = Platform.objects.get(id = platform_id)
+            serializer = PlatformSerializer(platform)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def put(self, request, platform_id):
+            platform = Platform.objects.get(id = platform_id)
+            serializer = PlatformSerializer(platform, data = request.data)
+            serializer.is_valid(raise_exception = True)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def delete(self, request, platform_id):
+            platform = Platform.objects.get(id = platform_id)
+            platform.delete()
+            return Response({'message': 'Platform was deleted'}, status.HTTP_204_NO_CONTENT)
+
+    def patch(self, request, platform_id):
+        platform = Platform.objects.get(id = platform_id)
+        serializer = PlatformSerializer(platform, data = request.data, partial = True)
         serializer.is_valid(raise_exception = True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
