@@ -42,6 +42,9 @@ class WatchListSerializer(serializers.ModelSerializer):
         return data
 
 class PlatformSerializer(serializers.ModelSerializer):
+    # movie_platform = WatchListSerializer(many=True, read_only=True)
+    # movie_platform = serializers.StringRelatedField(many=True, read_only=True)
+    movie_platform = serializers.HyperlinkedRelatedField(many=True, read_only=True, view_name='watchlist_app:movie_details', lookup_url_kwarg='movie_id')
     class Meta:
         model = Platform
         fields = '__all__'

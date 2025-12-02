@@ -22,11 +22,11 @@ from watchlist_app.models import Movie, Platform
 class MovieListAPIView(APIView):
     def get(self, request):
         movies = Movie.objects.all()
-        serializer = WatchListSerializer(movies, many=True)
+        serializer = WatchListSerializer(movies, many=True, context = {"request": request})
         return Response(serializer.data)
 
     def post(self, request):
-        serializer = WatchListSerializer(data = request.data)
+        serializer = WatchListSerializer(data = request.data, context = {"request": request})
         serializer.is_valid(raise_exception = True)
         serializer.save()
         return Response(serializer.data)
@@ -63,7 +63,7 @@ class MovieDetailsAPIView(APIView):
             movie = Movie.objects.get(id = movie_id)
         except Movie.DoesNotExist:
             return Response({'message': 'Movie id does not exist'}, status.HTTP_404_NOT_FOUND)
-        serializer = WatchListSerializer(movie)
+        serializer = WatchListSerializer(movie, context = {"request": request})
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def put(self, request, movie_id):
@@ -71,7 +71,7 @@ class MovieDetailsAPIView(APIView):
             movie = Movie.objects.get(id = movie_id)
         except Movie.DoesNotExist:
             return Response({'message': 'Movie id does not exist'}, status.HTTP_404_NOT_FOUND)
-        serializer = WatchListSerializer(movie, data = request.data)
+        serializer = WatchListSerializer(movie, data = request.data, context={"request": request})
         serializer.is_valid(raise_exception = True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -89,7 +89,7 @@ class MovieDetailsAPIView(APIView):
             movie = Movie.objects.get(id = movie_id)
         except Movie.DoesNotExist:
             return Response({'message': 'Movie id does not exist'}, status.HTTP_404_NOT_FOUND)
-        serializer = WatchListSerializer(movie, data = request.data, partial = True)
+        serializer = WatchListSerializer(movie, data = request.data, partial = True, context = {"request": request})
         serializer.is_valid(raise_exception = True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -98,11 +98,11 @@ class MovieDetailsAPIView(APIView):
 class PlatformListsAPIView(APIView):
     def get(self, request):
         platforms = Platform.objects.all()
-        serializer = PlatformSerializer(platforms, many=True)
+        serializer = PlatformSerializer(platforms, many=True, context = {"request": request})
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request):
-        serializer = PlatformSerializer(data = request.data)
+        serializer = PlatformSerializer(data = request.data, context = {"request": request})
         serializer.is_valid(raise_exception = True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -110,12 +110,12 @@ class PlatformListsAPIView(APIView):
 class PlatformDetailAPIView(APIView):
     def get(self, request, platform_id):
             platform = Platform.objects.get(id = platform_id)
-            serializer = PlatformSerializer(platform)
+            serializer = PlatformSerializer(platform,context = {"request": request})
             return Response(serializer.data, status=status.HTTP_200_OK)
 
     def put(self, request, platform_id):
             platform = Platform.objects.get(id = platform_id)
-            serializer = PlatformSerializer(platform, data = request.data)
+            serializer = PlatformSerializer(platform, data = request.data, context = {"request": request})
             serializer.is_valid(raise_exception = True)
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -127,7 +127,7 @@ class PlatformDetailAPIView(APIView):
 
     def patch(self, request, platform_id):
         platform = Platform.objects.get(id = platform_id)
-        serializer = PlatformSerializer(platform, data = request.data, partial = True)
+        serializer = PlatformSerializer(platform, data = request.data, partial = True, context = {"request": request})
         serializer.is_valid(raise_exception = True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
