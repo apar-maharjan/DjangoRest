@@ -1,10 +1,9 @@
-from rest_framework import status, permissions
+from rest_framework import status, permissions, generics, mixins
+from rest_framework.generics import ListCreateAPIView, RetrieveAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
 from rest_framework.views import APIView
-from watchlist_app.api.v1.serializers.watchlist import WatchListSerializer, PlatformSerializer
-from watchlist_app.models import Movie, Platform
-
+from watchlist_app.api.v1.serializers.watchlist import WatchListSerializer, PlatformSerializer, ReviewSerializer
+from watchlist_app.models import Movie, Platform, Review
 
 # @api_view(['GET', 'POST'])
 # def movie_list(request):
@@ -131,3 +130,34 @@ class PlatformDetailAPIView(APIView):
         serializer.is_valid(raise_exception = True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+# class ReviewListAPIView(generics.GenericAPIView, mixins.ListModelMixin, mixins.CreateModelMixin):
+#     queryset = Review.objects.all()
+#     serializer_class = ReviewSerializer
+#     def get(self,request,*args,**kwargs):
+#         return  self.list(request, *args, **kwargs)
+#     def post(self, request, *args, **kwargs):
+#         return self.create(request, *args, **kwargs)
+#
+# class ReviewDetailAPIView(generics.GenericAPIView, mixins.RetrieveModelMixin,mixins.UpdateModelMixin, mixins.DestroyModelMixin ):
+#     queryset = Review.objects.all()
+#     serializer_class = ReviewSerializer
+#     def get(self,request,*args,**kwargs):
+#         return self.retrieve(request, *args, **kwargs)
+#     def put(self, request, *args, **kwargs):
+#         return self.update(request, *args, **kwargs)
+#     def delete(self, request, *args, **kwargs):
+#         return self.destroy(request, *args, **kwargs)
+#     def patch(self, request, *args, **kwargs):
+#         return self.update(request, *args, **kwargs)
+
+class ReviewListAPIView(ListCreateAPIView):
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
+
+class ReviewDetailAPIView(RetrieveUpdateDestroyAPIView):
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
+
+
+

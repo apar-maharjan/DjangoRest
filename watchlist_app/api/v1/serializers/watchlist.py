@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from watchlist_app.models import Movie, Platform
+from watchlist_app.models import Movie, Platform, Review
 
 
 # def length_validation(value):
@@ -47,4 +47,9 @@ class PlatformSerializer(serializers.ModelSerializer):
     movie_platform = serializers.HyperlinkedRelatedField(many=True, read_only=True, view_name='watchlist_app:movie_detail', lookup_url_kwarg='movie_id')
     class Meta:
         model = Platform
+        fields = '__all__'
+
+class ReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
         fields = '__all__'
