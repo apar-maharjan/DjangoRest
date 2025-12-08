@@ -20,4 +20,5 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('movie/', include("watchlist_app.api.v1.urls")),
+    path('auth/', include('user_auth.api.v1.urls')),
 ]
