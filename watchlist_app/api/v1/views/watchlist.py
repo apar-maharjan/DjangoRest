@@ -1,8 +1,9 @@
 from rest_framework import status, permissions, generics, mixins, viewsets
 from rest_framework.generics import ListCreateAPIView, RetrieveAPIView, RetrieveUpdateDestroyAPIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from watchlist_app.api.v1.permissions import IsAdminOrReadOnly
 from watchlist_app.api.v1.serializers.watchlist import WatchListSerializer, PlatformSerializer, ReviewSerializer
 from watchlist_app.models import Movie, Platform, Review
 
@@ -161,6 +162,10 @@ class ReviewDetailAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = ReviewSerializer
 
 class ReviewModelViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
+    # permission_classes = [AllowAny]
+    # permission_classes = [IsAdminUser]
+    permission_classes = [IsAdminOrReadOnly]
     serializer_class = ReviewSerializer
     queryset = Review.objects.all()
+
