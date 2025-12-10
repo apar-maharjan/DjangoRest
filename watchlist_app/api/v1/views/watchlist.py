@@ -1,4 +1,6 @@
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status, permissions, generics, mixins, viewsets
+from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.generics import ListCreateAPIView, RetrieveAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
 from rest_framework.response import Response
@@ -165,7 +167,12 @@ class ReviewModelViewSet(viewsets.ModelViewSet):
     # permission_classes = [IsAuthenticated]
     # permission_classes = [AllowAny]
     # permission_classes = [IsAdminUser]
-    permission_classes = [IsAdminOrReadOnly]
+    # permission_classes = [IsAdminOrReadOnly]
     serializer_class = ReviewSerializer
     queryset = Review.objects.all()
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['rating', 'movie__id', 'movie__name']
+    search_fields = ['description', 'movie__description', 'movie__name']
+    ordering_fields = ['rating', 'movie__id', 'created']
+
 
