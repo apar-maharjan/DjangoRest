@@ -9,6 +9,9 @@ from watchlist_app.api.v1.permissions import IsAdminOrReadOnly
 from watchlist_app.api.v1.serializers.watchlist import WatchListSerializer, PlatformSerializer, ReviewSerializer
 from watchlist_app.models import Movie, Platform, Review
 
+from watchlist_app.api.v1.custom_throttle import ReviewThrottle, AnonymousReviewThrottle
+
+
 # @api_view(['GET', 'POST'])
 # def movie_list(request):
 #     if request.method.lower() == 'get':
@@ -168,6 +171,7 @@ class ReviewModelViewSet(viewsets.ModelViewSet):
     # permission_classes = [AllowAny]
     # permission_classes = [IsAdminUser]
     # permission_classes = [IsAdminOrReadOnly]
+    throttle_classes = [ReviewThrottle, AnonymousReviewThrottle]
     serializer_class = ReviewSerializer
     queryset = Review.objects.all()
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
